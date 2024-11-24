@@ -1,14 +1,13 @@
-import Navigation from './components/Navigation';
-import Hero from './components/Hero';
 import Footer from './components/Footer';
+import Hero from './components/Hero';
+import Navigation from './components/Navigation';
 
 const App = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="grid grid-rows-[auto,1fr,auto] min-h-screen">
       <Navigation />
-      <main className="flex-grow">
+      <main className="container mx-auto p-1">
         <Hero />
-        {/* Add more sections or components here */}
       </main>
       <Footer />
     </div>
