@@ -1,18 +1,20 @@
 // src/pages/RegisterComputer.tsx
-import { useState, useEffect } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { ComputerSchema, computerSchema } from '../validation/computerSchemas';
-import FormField from '../components/FormField';
-import { useRegisterComputer } from '../hooks/useRegisterComputer';
-import { toast } from 'react-toastify';
-import { Html5QrcodeScanner } from 'html5-qrcode';
-import { Button } from '@radix-ui/themes';
+import { useState, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ComputerSchema, computerSchema } from "../validation/computerSchemas";
+import { useRegisterComputer } from "../hooks/useRegisterComputer";
+import FormField from "../components/FormField";
+import { toast } from "react-toastify";
+import { Html5QrcodeScanner } from "html5-qrcode";
+import { Button } from "@radix-ui/themes";
 
 const RegisterComputer = () => {
   const [userType, setUserType] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [qrCodeContent, setQrCodeContent] = useState<string | null>(null);
+
+  const html5QrcodeScannerRef = useRef<Html5QrcodeScanner | null>(null);
 
   const {
     register,
@@ -28,91 +30,106 @@ const RegisterComputer = () => {
 
   const onSubmit = (data: ComputerSchema) => {
     if (!qrCodeContent) {
-      toast.error('Please scan a QR code before submitting.');
+      toast.error("Please scan a QR code before submitting.");
       return;
     }
 
-    const formData = new FormData();
-    if (data.regNo) {
-      formData.append('regNo', data.regNo);
-    }
-    if (data.nationalId) {
-      formData.append('nationalId', data.nationalId);
-    }
-    formData.append('serialNo', data.serialNo);
-    formData.append('brand', data.brand);
-    // formData.append('qrcode', data.qrcode || '');
-    console.log(data);
+    // Create an object with only the required fields
+    const requestData: ComputerSchema = {
+      brand: data.brand,
+      serialNo: data.serialNo,
+      regNo: userType === "student" ? Number(data.regNo) : undefined,
+      nationalId: userType === "guest" ? Number(data.nationalId) : undefined,
+    };
 
-    mutate({ data, qrCodeContent }, {
-      onSuccess: () => {
-        reset();
-        setUserType(null);
-        setQrCodeContent(null);
-        toast.success('Computer registered successfully!');
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      },
-      onError: (error: any) => {
-        const errorMessage = error.response?.data?.error || 'An error occurred';
-        console.log(error);
-        toast.error(`${errorMessage}`);
-      },
-    });
+    mutate(
+      { data: requestData, qrCodeContent },
+      {
+        onSuccess: () => {
+          reset();
+          setUserType(null);
+          setQrCodeContent(null);
+          toast.success("Computer registered successfully!");
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+        },
+        onError: (error: any) => {
+          const errorMessage =
+            error.response?.data?.error || "An error occurred";
+          console.error("Registration Error:", error);
+          toast.error(`${errorMessage}`);
+        },
+      }
+    );
   };
 
-  const handleUserTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleUserTypeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setUserType(event.target.value);
-    setValue('regNo', undefined);
-    setValue('nationalId', undefined);
+    setValue("regNo", undefined);
+    setValue("nationalId", undefined);
   };
 
   useEffect(() => {
-    let html5QrcodeScanner: Html5QrcodeScanner;
-
     if (isScanning) {
-      html5QrcodeScanner = new Html5QrcodeScanner(
-        'reader',
-        {
-          fps: 10,
-          qrbox: 250,
-        },
-        /* verbose= */ false
+      const html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: 250 },
+        false
       );
 
       html5QrcodeScanner.render(
         (decodedText: string) => {
-          setValue('qrcode', decodedText);
           setQrCodeContent(decodedText);
           setIsScanning(false);
-          html5QrcodeScanner.clear();
-          toast.success('QR code scanned successfully!');
+          html5QrcodeScanner
+            .clear()
+            .then(() => {
+              toast.success("QR code scanned successfully!");
+            })
+            .catch((error: any) => {
+              console.error("Error clearing QR scanner:", error);
+              toast.error("Failed to clear the QR scanner.");
+            });
         },
         (error: any) => {
-          console.log('Scan error:', error);
+          console.error("QR Scan Error:", error);
         }
       );
+
+      html5QrcodeScannerRef.current = html5QrcodeScanner;
     }
 
     return () => {
-      if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear().catch((error: any) => {
-          console.error('Error clearing QR Code scanner:', error);
-        });
+      if (html5QrcodeScannerRef.current) {
+        html5QrcodeScannerRef.current
+          .clear()
+          .then(() => {
+            console.log("QR scanner cleared on component unmount.");
+          })
+          .catch((error: any) => {
+            console.error("Error clearing QR scanner on unmount:", error);
+          });
       }
     };
-  }, [isScanning, setValue]);
+  }, [isScanning]);
 
   return (
     <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-8 text-primary">Register Computer</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-primary">
+        Register Computer
+      </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="max-w-lg mx-auto bg-white p-6 rounded shadow-md"
       >
         <div className="mb-4">
-          <label htmlFor="userType" className="block text-gray-700 font-semibold mb-2">
+          <label
+            htmlFor="userType"
+            className="block text-gray-700 font-semibold mb-2"
+          >
             User Type
           </label>
           <select
@@ -120,26 +137,29 @@ const RegisterComputer = () => {
             name="userType"
             className="w-full p-2 border border-gray-300 rounded"
             onChange={handleUserTypeChange}
+            defaultValue=""
           >
-            <option value="">Select User Type</option>
+            <option value="" disabled>
+              Select User Type
+            </option>
             <option value="student">Student</option>
             <option value="guest">Guest</option>
           </select>
         </div>
-        {userType === 'student' && (
+        {userType === "student" && (
           <FormField
             label="Registration No"
-            type="text"
+            type="number"
             name="regNo"
             placeholder="Enter your registration number"
             register={register}
             error={errors.regNo?.message}
           />
         )}
-        {userType === 'guest' && (
+        {userType === "guest" && (
           <FormField
             label="National ID"
-            type="text"
+            type="number"
             name="nationalId"
             placeholder="Enter your national ID"
             register={register}
@@ -162,18 +182,20 @@ const RegisterComputer = () => {
           register={register}
           error={errors.brand?.message}
         />
-        <FormField
-          label="QR Code"
-          type="text"
-          name="qrcode"
-          placeholder="Scan QR code"
-          register={register}
-          error={errors.qrcode?.message}
-        />
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">Scan QR Code</label>
+          <label className="block text-gray-700 font-semibold mb-2">
+            Scan QR Code
+          </label>
           {isScanning ? (
-            <div id="reader" style={{ width: '100%' }}></div>
+            <div
+              id="reader"
+              style={{
+                width: "100%",
+                height: "300px",
+                border: "2px solid #ddd",
+                borderRadius: "8px",
+              }}
+            ></div>
           ) : (
             <Button
               onClick={() => setIsScanning(true)}
@@ -185,10 +207,10 @@ const RegisterComputer = () => {
         </div>
         <button
           type="submit"
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary mt-4"
-          disabled={status === 'pending'}
+          className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary mt-4 disabled:opacity-50"
+          disabled={status === "pending"}
         >
-          {status === 'pending' ? 'Submitting...' : 'Register'}
+          {status === "pending" ? "Submitting..." : "Register"}
         </button>
       </form>
     </main>

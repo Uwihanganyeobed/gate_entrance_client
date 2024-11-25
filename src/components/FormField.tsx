@@ -10,6 +10,7 @@ interface FormFieldProps {
   options?: string[];
   register: UseFormRegister<any>;
   error?: string;
+  readOnly?: boolean; // Add readOnly prop
 }
 
 const FormField: FC<FormFieldProps> = ({
@@ -20,6 +21,7 @@ const FormField: FC<FormFieldProps> = ({
   options,
   register,
   error,
+  readOnly = false, // Default to false
 }) => {
   return (
     <div className="mb-4">
@@ -31,6 +33,7 @@ const FormField: FC<FormFieldProps> = ({
           id={name}
           {...register(name)}
           className="w-full p-2 border border-gray-300 rounded"
+          disabled={readOnly} // Disable select if readOnly
         >
           <option value="">Select {label}</option>
           {options?.map((option) => (
@@ -46,6 +49,7 @@ const FormField: FC<FormFieldProps> = ({
           placeholder={placeholder}
           {...register(name)}
           className="w-full p-2 border border-gray-300 rounded"
+          readOnly={readOnly} // Apply readOnly to input
         />
       )}
       {error && <p className="text-red-500 text-sm">{error}</p>}
