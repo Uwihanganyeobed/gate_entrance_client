@@ -47,10 +47,11 @@ const RegisterUser = () => {
         reset();
         setPhoto(null);
         toast.success('User registered successfully!');
+        window.location.reload(); // Reload the page after successful submission
       },
       onError: (error: any) => {
         const errorMessage = error.response?.data?.error || 'An error occurred';
-        console.log(error)
+        console.log(error);
         toast.error(`${errorMessage}`);
       },
     });
