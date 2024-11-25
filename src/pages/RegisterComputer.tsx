@@ -1,16 +1,15 @@
 // src/pages/RegisterComputer.tsx
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { ComputerSchema, computerSchema } from "../validation/computerSchemas";
-import FormField from "../components/FormField";
-import { useRegisterComputer } from "../hooks/useRegisterComputer";
-import { toast } from "react-toastify";
-import QrScanner from "react-qr-scanner";
-import { Button, Spinner } from "@radix-ui/themes";
+import { useState, useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { ComputerSchema, computerSchema } from '../validation/computerSchemas';
+import FormField from '../components/FormField';
+import { useRegisterComputer } from '../hooks/useRegisterComputer';
+import { toast } from 'react-toastify';
+import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Button } from '@radix-ui/themes';
 
 const RegisterComputer = () => {
-  const [qrCodeContent, setQrCodeContent] = useState<string | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
 
@@ -24,66 +23,88 @@ const RegisterComputer = () => {
     resolver: zodResolver(computerSchema),
   });
 
-  const { mutate, status } = useRegisterComputer(qrCodeContent || "");
+  const { mutate, status } = useRegisterComputer('');
 
   const onSubmit = (data: ComputerSchema) => {
     const formData = new FormData();
     if (data.regNo) {
-      formData.append("regNo", data.regNo.toString());
+      formData.append('regNo', data.regNo.toString());
     }
     if (data.nationalId) {
-      formData.append("nationalId", data.nationalId.toString());
+      formData.append('nationalId', data.nationalId.toString());
     }
-    formData.append("serialNo", data.serialNo);
-    formData.append("brand", data.brand);
+    formData.append('serialNo', data.serialNo);
+    formData.append('brand', data.brand);
 
     mutate(formData, {
       onSuccess: () => {
         reset();
-        setQrCodeContent(null);
         setUserType(null);
-        toast.success("Computer registered successfully!");
+        toast.success('Computer registered successfully!');
         setTimeout(() => {
-          window.location.reload(); // Reload the page after a delay
-        }, 3000); // 3 seconds delay
+          window.location.reload();
+        }, 3000);
       },
       onError: (error: any) => {
-        const errorMessage = error.response?.data?.error || "An error occurred";
+        const errorMessage = error.response?.data?.error || 'An error occurred';
         console.log(error);
         toast.error(`${errorMessage}`);
       },
     });
   };
 
-  const handleScan = (data: string | null) => {
-    if (data) {
-      setQrCodeContent(data);
-      setIsScanning(false);
-    }
-  };
-
-  const handleError = (err: any) => {
-    console.error(err);
-    toast.error("Error scanning QR code");
-    setIsScanning(false);
-  };
-
   const handleUserTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUserType(event.target.value);
-    setValue("regNo", undefined);
-    setValue("nationalId", undefined);
+    setValue('regNo', undefined);
+    setValue('nationalId', undefined);
   };
 
-  const startScanning = () => {
-    setIsScanning(true);
-  };
+  useEffect(() => {
+    let html5QrcodeScanner: Html5QrcodeScanner;
+
+    if (isScanning) {
+      html5QrcodeScanner = new Html5QrcodeScanner(
+        'reader',
+        {
+          fps: 10,
+          qrbox: 250,
+        },
+        /* verbose= */ false
+      );
+
+      html5QrcodeScanner.render(
+        (decodedText: string) => {
+          setValue('serialNo', decodedText);
+          setIsScanning(false);
+          html5QrcodeScanner.clear();
+          toast.success('QR code scanned successfully!');
+        },
+        (error: any) => {
+          console.log('Scan error:', error);
+        }
+      );
+    }
+
+    return () => {
+      if (html5QrcodeScanner) {
+        html5QrcodeScanner.clear().catch((error: any) => {
+          console.error('Error clearing QR Code scanner:', error);
+        });
+      }
+    };
+  }, [isScanning, setValue]);
 
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-3xl font-bold text-center mb-8 text-primary">Register Computer</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto bg-white p-6 rounded shadow-md">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="max-w-lg mx-auto bg-white p-6 rounded shadow-md"
+      >
         <div className="mb-4">
-          <label htmlFor="userType" className="block text-gray-700 font-semibold mb-2">User Type</label>
+          <label htmlFor="userType" className="block text-gray-700 font-semibold mb-2">
+            User Type
+          </label>
           <select
             id="userType"
             name="userType"
@@ -119,7 +140,7 @@ const RegisterComputer = () => {
           label="Serial No"
           type="text"
           name="serialNo"
-          placeholder="Enter the serial number"
+          placeholder="Enter the serial number or scan QR code"
           register={register}
           error={errors.serialNo?.message}
         />
@@ -134,22 +155,15 @@ const RegisterComputer = () => {
         <div className="mb-4">
           <label className="block text-gray-700 font-semibold mb-2">Scan QR Code</label>
           {isScanning ? (
-            <QrScanner
-              delay={300}
-              onError={handleError}
-              onScan={handleScan}
-              style={{ width: '100%' }}
-            />
+            <div id="reader" style={{ width: '100%' }}></div>
           ) : (
-            <Button onClick={startScanning} className="relative inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-              <span className="absolute inset-0 flex items-center justify-center">
-                <span className="w-4 h-4 bg-white rounded-full animate-ping"></span>
-                <span className="w-4 h-4 bg-white rounded-full"></span>
-              </span>
-              <span className="relative">Start Scanning</span>
+            <Button
+              onClick={() => setIsScanning(true)}
+              className="relative inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Start Scanning
             </Button>
           )}
-          {qrCodeContent && <p className="text-green-500 text-sm mt-2">QR Code Content: {qrCodeContent}</p>}
         </div>
         <button
           type="submit"
