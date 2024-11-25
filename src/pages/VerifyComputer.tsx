@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useVerifyComputer } from "../hooks/useVerifyComputer";
 import { toast } from "react-toastify";
-import { Button } from "@radix-ui/themes";
+import { Button, Card, Text, Box, Flex } from "@radix-ui/themes";
 
 const VerifyComputer = () => {
   const [isScanning, setIsScanning] = useState<boolean>(false);
@@ -16,7 +16,7 @@ const VerifyComputer = () => {
     if (isScanning) {
       const html5QrcodeScanner = new Html5QrcodeScanner(
         "reader",
-        { fps: 10, qrbox: 250 },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
         false
       );
 
@@ -36,7 +36,10 @@ const VerifyComputer = () => {
             });
         },
         (error: any) => {
-          console.error("QR Scan Error:", error);
+          if (error.name !== "NotFoundException") {
+            console.error("QR Scan Error:", error);
+            toast.error("Error scanning QR code. Please try again.");
+          }
         }
       );
 
@@ -57,9 +60,9 @@ const VerifyComputer = () => {
     };
   }, [isScanning, refetch]);
 
-  const clearScreen = () => {
+  const startScanning = () => {
     setQrCodeContent(null);
-    refetch();
+    setIsScanning(true);
   };
 
   return (
@@ -69,7 +72,7 @@ const VerifyComputer = () => {
       </h1>
       <div className="flex justify-center mb-4">
         <Button
-          onClick={() => setIsScanning(true)}
+          onClick={startScanning}
           className="relative inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Start Scanning
@@ -80,43 +83,39 @@ const VerifyComputer = () => {
           id="reader"
           style={{
             width: "100%",
+            maxWidth: "500px",
             height: "300px",
             border: "2px solid #ddd",
             borderRadius: "8px",
+            margin: "0 auto",
           }}
         ></div>
       )}
       {data && (
-        <div className="mt-4 p-4 border rounded shadow-md bg-white">
-          <img
-            src={data.photoLink}
-            alt="User Photo"
-            className="w-32 h-32 rounded-full mx-auto mb-4"
-          />
-          <p className="text-center text-lg font-semibold">{data.names}</p>
-          <p className="text-center text-sm text-gray-600">
-            {data.regNo
-              ? `Reg No: ${data.regNo}`
-              : `National ID: ${data.nationalId}`}
-          </p>
-          <p className="text-center text-sm text-gray-600">
-            Serial No: {data.serialNo}
-          </p>
-        </div>
+        <Card className="mt-4 p-4 border rounded shadow-md bg-white">
+          <Flex direction="column" align="center">
+            <img
+              src={data.photoLink}
+              alt="User Photo"
+              className="w-32 h-32 rounded-full mb-4"
+            />
+            <Text className="text-lg font-semibold">{data.names}</Text>
+            <Text className="text-sm text-gray-600">
+              {data.regNo
+                ? `Reg No: ${data.regNo}`
+                : `National ID: ${data.nationalId}`}
+            </Text>
+            <Text className="text-sm text-gray-600">
+              Serial No: {data.serialNo}
+            </Text>
+          </Flex>
+        </Card>
       )}
       {error && (
-        <div className="mt-4 p-4 border rounded shadow-md bg-red-100 text-red-700">
-          <p>Error: {error.message}</p>
-        </div>
+        <Box className="mt-4 p-4 border rounded shadow-md bg-red-100 text-red-700">
+          <Text>Error: {error.message}</Text>
+        </Box>
       )}
-      <div className="flex justify-center mt-4">
-        <Button
-          onClick={clearScreen}
-          className="relative inline-flex items-center px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Clear Screen
-        </Button>
-      </div>
     </main>
   );
 };
