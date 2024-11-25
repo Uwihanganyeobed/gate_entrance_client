@@ -31,7 +31,7 @@ const RegisterUser = () => {
   const userType = watch('userType');
 
   return (
-    <main className="flex-grow container mx-auto p-4">
+    <main className="container mx-auto p-4">
       <h1 className="text-3xl font-bold text-center mb-8 text-primary">Register User</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto bg-white p-6 rounded shadow-md">
         <FormField
@@ -62,13 +62,13 @@ const RegisterUser = () => {
           label="Registration No / National ID"
           type="text"
           name="registrationOrId"
-          placeholder={`Enter your ${userType === 'Guest' ? 'national ID (16 digits)' : 'registration number (9 digits)'}`}
+          placeholder={`Enter your ${userType === 'Guest' ? 'National ID (16 digits)' : 'Registration Number (9 digits)'}`}
           register={register}
           error={errors.registrationOrId?.message}
         />
         <CameraCapture onCapture={handleCapture} />
         {errors.photo && <p className="text-red-500 text-sm mb-4">{errors.photo.message}</p>}
-        <button type="submit" className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary">
+        <button type="submit" className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary mt-4">
           Register
         </button>
       </form>
