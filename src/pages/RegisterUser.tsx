@@ -15,6 +15,7 @@ const RegisterUser = () => {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<RegisterUserSchema>({
     resolver: zodResolver(registerUserSchema),
@@ -40,7 +41,12 @@ const RegisterUser = () => {
       formData.append('photo', photo);
     }
 
-    mutate(formData);
+    mutate(formData, {
+      onSuccess: () => {
+        reset();
+        setPhoto(null);
+      },
+    });
   };
 
   const userType = watch('userType');
