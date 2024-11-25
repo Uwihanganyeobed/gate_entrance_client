@@ -22,7 +22,7 @@ const RegisterUser = () => {
     resolver: zodResolver(registerUserSchema),
   });
 
-  const { mutate, status, isSuccess, isError, error } = useRegisterUser();
+  const { mutate, status } = useRegisterUser();
 
   const handleCapture = (capturedPhoto: File) => {
     setPhoto(capturedPhoto);
@@ -49,8 +49,9 @@ const RegisterUser = () => {
         toast.success('User registered successfully!');
       },
       onError: (error: any) => {
-        const errorMessage = error.response?.data?.message || 'An error occurred';
-        toast.error(`Error: ${errorMessage}`);
+        const errorMessage = error.response?.data?.error || 'An error occurred';
+        console.log(error)
+        toast.error(`${errorMessage}`);
       },
     });
   };
@@ -106,16 +107,6 @@ const RegisterUser = () => {
         >
           {status === 'pending' ? 'Submitting...' : 'Register'}
         </button>
-        {isError && (
-          <p className="text-red-500 text-sm mt-2">
-            An error occurred: {(error as Error).message}
-          </p>
-        )}
-        {isSuccess && (
-          <p className="text-green-500 text-sm mt-2">
-            User registered successfully!
-          </p>
-        )}
       </form>
     </main>
   );
