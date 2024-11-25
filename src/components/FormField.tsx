@@ -1,10 +1,10 @@
 // src/components/FormField.tsx
-import { FC } from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { FC } from "react";
+import { UseFormRegister } from "react-hook-form";
 
 interface FormFieldProps {
   label: string;
-  type: 'text' | 'select' | 'password' | 'email';
+  type: "text" | "select" | "number" | "password" | "email";
   name: string;
   placeholder?: string;
   options?: string[];
@@ -26,7 +26,7 @@ const FormField: FC<FormFieldProps> = ({
       <label htmlFor={name} className="block text-gray-700 font-semibold mb-2">
         {label}
       </label>
-      {type === 'select' ? (
+      {type === "select" ? (
         <select
           id={name}
           {...register(name)}

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { RegisterUserSchema, registerUserSchema } from '../validation/schemas';
+import { RegisterUserSchema, registerUserSchema } from '../validation/userSchemas';
 import FormField from '../components/FormField';
 import CameraCapture from '../components/CameraCapture';
 import { useRegisterUser } from '../hooks/useRegisterUser';
@@ -91,7 +91,7 @@ const RegisterUser = () => {
         />
         <FormField
           label="Registration No / National ID"
-          type="text"
+          type="number"
           name="registrationOrId"
           placeholder={
             userType === 'guest'
