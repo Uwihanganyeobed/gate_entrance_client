@@ -12,6 +12,7 @@ import { Button } from '@radix-ui/themes';
 const RegisterComputer = () => {
   const [userType, setUserType] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [qrCodeContent, setQrCodeContent] = useState<string | null>(null);
 
   const {
     register,
@@ -23,24 +24,30 @@ const RegisterComputer = () => {
     resolver: zodResolver(computerSchema),
   });
 
-  const { mutate, status } = useRegisterComputer('');
+  const { mutate, status } = useRegisterComputer();
 
   const onSubmit = (data: ComputerSchema) => {
+    if (!qrCodeContent) {
+      toast.error('Please scan a QR code before submitting.');
+      return;
+    }
+
     const formData = new FormData();
     if (data.regNo) {
-      formData.append('regNo', data.regNo.toString());
+      formData.append('regNo', data.regNo);
     }
     if (data.nationalId) {
-      formData.append('nationalId', data.nationalId.toString());
+      formData.append('nationalId', data.nationalId);
     }
     formData.append('serialNo', data.serialNo);
     formData.append('brand', data.brand);
     formData.append('qrcode', data.qrcode || '');
 
-    mutate(formData, {
+    mutate({ data: formData, qrCodeContent }, {
       onSuccess: () => {
         reset();
         setUserType(null);
+        setQrCodeContent(null);
         toast.success('Computer registered successfully!');
         setTimeout(() => {
           window.location.reload();
@@ -76,6 +83,7 @@ const RegisterComputer = () => {
       html5QrcodeScanner.render(
         (decodedText: string) => {
           setValue('qrcode', decodedText);
+          setQrCodeContent(decodedText);
           setIsScanning(false);
           html5QrcodeScanner.clear();
           toast.success('QR code scanned successfully!');
@@ -120,7 +128,7 @@ const RegisterComputer = () => {
         {userType === 'student' && (
           <FormField
             label="Registration No"
-            type="number"
+            type="text"
             name="regNo"
             placeholder="Enter your registration number"
             register={register}
@@ -130,7 +138,7 @@ const RegisterComputer = () => {
         {userType === 'guest' && (
           <FormField
             label="National ID"
-            type="number"
+            type="text"
             name="nationalId"
             placeholder="Enter your national ID"
             register={register}

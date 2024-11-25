@@ -2,8 +2,8 @@
 import APIClient from "./api-client";
 
 export interface Computer {
-  regNo?: number;
-  nationalId?: number;
+  regNo?: string;
+  nationalId?: string;
   serialNo: string;
   brand: string;
 }
