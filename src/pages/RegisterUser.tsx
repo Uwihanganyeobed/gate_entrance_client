@@ -47,7 +47,9 @@ const RegisterUser = () => {
         reset();
         setPhoto(null);
         toast.success('User registered successfully!');
-        window.location.reload(); // Reload the page after successful submission
+        setTimeout(() => {
+          window.location.reload(); // Reload the page after a delay
+        }, 3000); // 3 seconds delay
       },
       onError: (error: any) => {
         const errorMessage = error.response?.data?.error || 'An error occurred';
