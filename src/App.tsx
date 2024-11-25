@@ -1,13 +1,13 @@
-import Footer from './components/Footer';
-import Hero from './components/Hero';
-import Navigation from './components/Navigation';
+import Footer from "./components/Footer";
+import RegisterUser from "./pages/RegisterUser";
+import Navigation from "./components/Navigation";
 
 const App = () => {
   return (
     <div className="grid grid-rows-[auto,1fr,auto] min-h-screen">
       <Navigation />
       <main className="container mx-auto p-1">
-        <Hero />
+        <RegisterUser />
       </main>
       <Footer />
     </div>
