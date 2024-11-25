@@ -41,9 +41,10 @@ const RegisterComputer = () => {
     }
     formData.append('serialNo', data.serialNo);
     formData.append('brand', data.brand);
-    formData.append('qrcode', data.qrcode || '');
+    // formData.append('qrcode', data.qrcode || '');
+    console.log(data);
 
-    mutate({ data: formData, qrCodeContent }, {
+    mutate({ data, qrCodeContent }, {
       onSuccess: () => {
         reset();
         setUserType(null);
