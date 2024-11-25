@@ -7,6 +7,7 @@ export const computerSchema = z
     nationalId: z.number().optional(),
     serialNo: z.string().min(1, { message: "serialNo cannot be empty" }),
     brand: z.string().min(1, { message: "brand cannot be empty" }),
+    qrcode: z.string().optional(),
   })
   .refine((data) => data.regNo || data.nationalId, {
     message: "Either regNo or nationalId must be provided",

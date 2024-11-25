@@ -35,6 +35,7 @@ const RegisterComputer = () => {
     }
     formData.append('serialNo', data.serialNo);
     formData.append('brand', data.brand);
+    formData.append('qrcode', data.qrcode || '');
 
     mutate(formData, {
       onSuccess: () => {
@@ -74,7 +75,7 @@ const RegisterComputer = () => {
 
       html5QrcodeScanner.render(
         (decodedText: string) => {
-          setValue('serialNo', decodedText);
+          setValue('qrcode', decodedText);
           setIsScanning(false);
           html5QrcodeScanner.clear();
           toast.success('QR code scanned successfully!');
@@ -140,7 +141,7 @@ const RegisterComputer = () => {
           label="Serial No"
           type="text"
           name="serialNo"
-          placeholder="Enter the serial number or scan QR code"
+          placeholder="Enter the serial number"
           register={register}
           error={errors.serialNo?.message}
         />
@@ -151,6 +152,14 @@ const RegisterComputer = () => {
           placeholder="Enter the brand"
           register={register}
           error={errors.brand?.message}
+        />
+        <FormField
+          label="QR Code"
+          type="text"
+          name="qrcode"
+          placeholder="Scan QR code"
+          register={register}
+          error={errors.qrcode?.message}
         />
         <div className="mb-4">
           <label className="block text-gray-700 font-semibold mb-2">Scan QR Code</label>
