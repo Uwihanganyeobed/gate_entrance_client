@@ -6,6 +6,7 @@ import { RegisterUserSchema, registerUserSchema } from '../validation/schemas';
 import FormField from '../components/FormField';
 import CameraCapture from '../components/CameraCapture';
 import { useRegisterUser } from '../hooks/useRegisterUser';
+import { toast } from 'react-toastify';
 
 const RegisterUser = () => {
   const [photo, setPhoto] = useState<File | null>(null);
@@ -45,6 +46,11 @@ const RegisterUser = () => {
       onSuccess: () => {
         reset();
         setPhoto(null);
+        toast.success('User registered successfully!');
+      },
+      onError: (error: any) => {
+        const errorMessage = error.response?.data?.message || 'An error occurred';
+        toast.error(`Error: ${errorMessage}`);
       },
     });
   };

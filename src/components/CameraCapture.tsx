@@ -1,5 +1,5 @@
 // src/components/CameraCapture.tsx
-import { useRef, useState, FC } from 'react';
+import { useRef, useState, FC, useEffect } from 'react';
 import Webcam from 'react-webcam';
 
 interface CameraCaptureProps {
@@ -29,6 +29,12 @@ const CameraCapture: FC<CameraCaptureProps> = ({ onCapture }) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (!capturedPhoto) {
+      setIsCameraOpen(false);
+    }
+  }, [capturedPhoto]);
 
   return (
     <div className="mb-4">

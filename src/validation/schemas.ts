@@ -5,7 +5,12 @@ export const registerUserSchema = z
   .object({
     firstName: z.string().min(1, 'First name is required'),
     lastName: z.string().min(1, 'Last name is required'),
-    userType: z.enum(['guest', 'student'], { required_error: 'User type is required' }),
+    userType: z.enum(['guest', 'student', ''], {
+      required_error: 'Please choose student or guest',
+      invalid_type_error: 'Invalid user type. Please choose student or guest',
+    }).refine(value => value !== '', {
+      message: 'Please choose student or guest',
+    }),
     registrationOrId: z
       .string()
       .min(1, 'Registration number or national ID is required'),
@@ -17,15 +22,15 @@ export const registerUserSchema = z
     const { userType, registrationOrId } = data;
     if (userType === 'guest' && !/^\d{16}$/.test(registrationOrId)) {
       context.addIssue({
-        path: ['registrationOrId'],
         code: z.ZodIssueCode.custom,
         message: 'National ID must be 16 digits',
+        path: ['registrationOrId'],
       });
     } else if (userType === 'student' && !/^\d{9}$/.test(registrationOrId)) {
       context.addIssue({
-        path: ['registrationOrId'],
         code: z.ZodIssueCode.custom,
         message: 'Registration number must be 9 digits',
+        path: ['registrationOrId'],
       });
     }
   });
