@@ -8,6 +8,7 @@ import { Button, Card, Text, Box, Flex } from "@radix-ui/themes";
 const VerifyComputer = () => {
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [qrCodeContent, setQrCodeContent] = useState<string | null>(null);
+  const [isCardDisplayed, setIsCardDisplayed] = useState<boolean>(false);
   const html5QrcodeScannerRef = useRef<Html5QrcodeScanner | null>(null);
 
   const { data, error, refetch } = useVerifyComputer(qrCodeContent || "");
@@ -29,6 +30,7 @@ const VerifyComputer = () => {
             .then(() => {
               toast.success("QR code scanned successfully!");
               refetch();
+              setIsCardDisplayed(true);
             })
             .catch((error: any) => {
               console.error("Error clearing QR scanner:", error);
@@ -36,10 +38,7 @@ const VerifyComputer = () => {
             });
         },
         (error: any) => {
-          if (error.name !== "NotFoundException") {
-            console.error("QR Scan Error:", error);
-            toast.error("Error scanning QR code. Please try again.");
-          }
+          console.error("QR Scan Error:", error);
         }
       );
 
@@ -61,8 +60,12 @@ const VerifyComputer = () => {
   }, [isScanning, refetch]);
 
   const startScanning = () => {
-    setQrCodeContent(null);
-    setIsScanning(true);
+    if (isCardDisplayed) {
+      setQrCodeContent(null);
+      setIsCardDisplayed(false);
+    } else {
+      setIsScanning(true);
+    }
   };
 
   return (
