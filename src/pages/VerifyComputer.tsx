@@ -77,7 +77,7 @@ const VerifyComputer = () => {
           onClick={startScanning}
           className="relative inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Start Scanning
+          {isCardDisplayed ? "Scan Again" : "Start Scanning"}
         </Button>
       </div>
       {isScanning && (
@@ -94,27 +94,33 @@ const VerifyComputer = () => {
         ></div>
       )}
       {data && (
-        <Card className="mt-4 p-4 border rounded shadow-md bg-white">
+        <Card
+          variant="classic"
+          className="mt-4 mx-auto max-w-md p-4 border rounded shadow-md bg-white"
+        >
           <Flex direction="column" align="center">
             <img
               src={data.photoLink}
               alt="User Photo"
-              className="w-32 h-32 rounded-full mb-4"
+              className="w-full h-auto mb-4"
+              style={{ borderRadius: "8px", objectFit: "cover" }}
             />
-            <Text className="text-lg font-semibold">{data.names}</Text>
-            <Text className="text-sm text-gray-600">
+            <Text className="text-lg font-semibold text-blue-700">
+              {data.names}
+            </Text>
+            <Text className="text-sm text-blue-600">
               {data.regNo
                 ? `Reg No: ${data.regNo}`
                 : `National ID: ${data.nationalId}`}
             </Text>
-            <Text className="text-sm text-gray-600">
+            <Text className="text-sm text-blue-600">
               Serial No: {data.serialNo}
             </Text>
           </Flex>
         </Card>
       )}
       {error && (
-        <Box className="mt-4 p-4 border rounded shadow-md bg-red-100 text-red-700">
+        <Box className="mt-4 p-4 border rounded shadow-md bg-red-100 text-red-700 max-w-md mx-auto">
           <Text>Error: {error.message}</Text>
         </Box>
       )}
