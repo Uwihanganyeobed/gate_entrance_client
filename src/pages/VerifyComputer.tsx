@@ -1,3 +1,4 @@
+// src/pages/VerifyComputer.tsx
 import { useState, useEffect, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useVerifyComputer } from "../hooks/useVerifyComputer";
@@ -10,7 +11,20 @@ const VerifyComputer = () => {
   const [isCardDisplayed, setIsCardDisplayed] = useState<boolean>(false);
   const html5QrcodeScannerRef = useRef<Html5QrcodeScanner | null>(null);
 
-  const { data, error, refetch } = useVerifyComputer(qrCodeContent || "");
+  // Fetch data only when qrCodeContent is available
+  const { data, error, isLoading } = useVerifyComputer(qrCodeContent || "");
+
+  useEffect(() => {
+    if (qrCodeContent) {
+      if (error) {
+        // Display error message using toast
+        toast.error(error.message || "No computer found for the scanned QR code.");
+        setIsCardDisplayed(false);
+      } else if (data) {
+        setIsCardDisplayed(true);
+      }
+    }
+  }, [qrCodeContent, data, error]);
 
   useEffect(() => {
     if (isScanning) {
@@ -28,8 +42,6 @@ const VerifyComputer = () => {
             .clear()
             .then(() => {
               toast.success("QR code scanned successfully!");
-              setIsCardDisplayed(true);
-              refetch();
             })
             .catch((error: any) => {
               console.error("Error clearing QR scanner:", error);
@@ -53,7 +65,7 @@ const VerifyComputer = () => {
           });
       }
     };
-  }, [isScanning, refetch]);
+  }, [isScanning]);
 
   const startScanning = () => {
     if (isCardDisplayed) {
@@ -90,7 +102,12 @@ const VerifyComputer = () => {
           }}
         ></div>
       )}
-      {data && (
+      {isLoading && (
+        <div className="text-center mt-4">
+          <Text>Loading...</Text>
+        </div>
+      )}
+      {data && isCardDisplayed && (
         <Card
           variant="classic"
           className="mt-8 mx-auto max-w-lg p-6 border border-gray-300 rounded-lg shadow-md bg-white"
@@ -103,9 +120,7 @@ const VerifyComputer = () => {
             />
             <div className="text-left w-full space-y-4">
               <div>
-                <Text className="text-xl font-bold text-gray-800">
-                  Names:
-                </Text>
+                <Text className="text-xl font-bold text-gray-800">Names:</Text>
                 <Text className="text-lg text-gray-700">{data.names}</Text>
               </div>
               <div>
@@ -117,19 +132,12 @@ const VerifyComputer = () => {
                 </Text>
               </div>
               <div>
-                <Text className="text-xl font-bold text-gray-800">
-                  Serial No:
-                </Text>
+                <Text className="text-xl font-bold text-gray-800">Serial No:</Text>
                 <Text className="text-lg text-gray-700">{data.serialNo}</Text>
               </div>
             </div>
           </Flex>
         </Card>
-      )}
-      {error && (
-        <div className="mt-8 p-4 border rounded-lg shadow-md bg-red-100 text-red-700 max-w-lg mx-auto">
-          <Text>Error: {error?.message}</Text>
-        </div>
       )}
     </main>
   );
