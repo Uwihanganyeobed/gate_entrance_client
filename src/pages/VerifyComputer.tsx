@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useVerifyComputer } from "../hooks/useVerifyComputer";
 import { toast } from "react-toastify";
-import { Button, Card, Text, Box, Flex } from "@radix-ui/themes";
+import { Button, Card, Text, Flex } from "@radix-ui/themes";
 
 const VerifyComputer = () => {
   const [isScanning, setIsScanning] = useState<boolean>(false);
@@ -30,6 +30,7 @@ const VerifyComputer = () => {
             .then(() => {
               toast.success("QR code scanned successfully!");
               setIsCardDisplayed(true);
+              refetch();
             })
             .catch((error: any) => {
               console.error("Error clearing QR scanner:", error);
@@ -48,9 +49,6 @@ const VerifyComputer = () => {
       if (html5QrcodeScannerRef.current) {
         html5QrcodeScannerRef.current
           .clear()
-          .then(() => {
-            console.log("QR scanner cleared on component unmount.");
-          })
           .catch((error: any) => {
             console.error("Error clearing QR scanner on unmount:", error);
           });
@@ -69,13 +67,13 @@ const VerifyComputer = () => {
 
   return (
     <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-8 text-primary">
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
         Verify Computer
       </h1>
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-6">
         <Button
           onClick={startScanning}
-          className="relative inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-6 py-3 bg-gray-800 text-white text-lg font-medium rounded-lg hover:bg-gray-900 transition-colors duration-200"
         >
           {isCardDisplayed ? "Scan Again" : "Start Scanning"}
         </Button>
@@ -83,46 +81,52 @@ const VerifyComputer = () => {
       {isScanning && (
         <div
           id="reader"
+          className="mx-auto"
           style={{
             width: "100%",
             maxWidth: "500px",
             height: "300px",
             border: "2px solid #ddd",
             borderRadius: "8px",
-            margin: "0 auto",
           }}
         ></div>
       )}
       {data && (
         <Card
           variant="classic"
-          className="mt-4 mx-auto max-w-md p-4 border rounded shadow-md bg-white"
+          className="mt-8 mx-auto max-w-lg p-6 border border-gray-300 rounded-lg shadow-md bg-white"
         >
           <Flex direction="column" align="center">
             <img
               src={data.photoLink}
               alt="User Photo"
-              className="w-full h-auto mb-4"
-              style={{ borderRadius: "8px", objectFit: "cover" }}
+              className="w-full h-auto mb-6 rounded-lg object-cover"
             />
-            <Text className="text-lg font-semibold text-blue-700">
-              {data.names}
-            </Text>
-            <Text className="text-sm text-blue-600">
-              {data.regNo
-                ? `Reg No: ${data.regNo}`
-                : `National ID: ${data.nationalId}`}
-            </Text>
-            <Text className="text-sm text-blue-600">
-              Serial No: {data.serialNo}
-            </Text>
+            <div className="text-left w-full">
+              <Text className="text-xl font-bold text-gray-800 mb-1">
+                Names:
+              </Text>
+              <Text className="text-lg text-gray-700 mb-4">{data.names}</Text>
+
+              <Text className="text-xl font-bold text-gray-800 mb-1">
+                {data.regNo ? "Reg No:" : "National ID:"}
+              </Text>
+              <Text className="text-lg text-gray-700 mb-4">
+                {data.regNo ? data.regNo : data.nationalId}
+              </Text>
+
+              <Text className="text-xl font-bold text-gray-800 mb-1">
+                Serial No:
+              </Text>
+              <Text className="text-lg text-gray-700">{data.serialNo}</Text>
+            </div>
           </Flex>
         </Card>
       )}
       {error && (
-        <Box className="mt-4 p-4 border rounded shadow-md bg-red-100 text-red-700 max-w-md mx-auto">
-          <Text>Error: {error.message}</Text>
-        </Box>
+        <div className="mt-8 p-4 border rounded-lg shadow-md bg-red-100 text-red-700 max-w-lg mx-auto">
+          <Text>Error: {error?.message}</Text>
+        </div>
       )}
     </main>
   );
