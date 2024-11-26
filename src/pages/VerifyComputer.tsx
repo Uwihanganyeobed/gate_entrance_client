@@ -29,7 +29,6 @@ const VerifyComputer = () => {
             .clear()
             .then(() => {
               toast.success("QR code scanned successfully!");
-              refetch();
               setIsCardDisplayed(true);
             })
             .catch((error: any) => {

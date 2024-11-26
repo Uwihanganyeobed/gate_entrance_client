@@ -8,8 +8,10 @@ import FormField from "../components/FormField";
 import { toast } from "react-toastify";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { Button } from "@radix-ui/themes";
+import { useNavigate } from "react-router-dom";
 
 const RegisterComputer = () => {
+  const navigate = useNavigate();
   const [userType, setUserType] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [qrCodeContent, setQrCodeContent] = useState<string | null>(null);
@@ -51,7 +53,7 @@ const RegisterComputer = () => {
           setQrCodeContent(null);
           toast.success("Computer registered successfully!");
           setTimeout(() => {
-            window.location.reload();
+            navigate('/');
           }, 3000);
         },
         onError: (error: any) => {

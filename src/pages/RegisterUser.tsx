@@ -7,9 +7,11 @@ import FormField from '../components/FormField';
 import CameraCapture from '../components/CameraCapture';
 import { useRegisterUser } from '../hooks/useRegisterUser';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterUser = () => {
   const [photo, setPhoto] = useState<File | null>(null);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -48,7 +50,7 @@ const RegisterUser = () => {
         setPhoto(null);
         toast.success('User registered successfully!');
         setTimeout(() => {
-          window.location.reload(); // Reload the page after a delay
+          navigate('/'); // Go to the home page
         }, 3000); // 3 seconds delay
       },
       onError: (error: any) => {
