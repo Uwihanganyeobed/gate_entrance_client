@@ -18,7 +18,7 @@ const VerifyComputer = () => {
     if (qrCodeContent) {
       if (error) {
         // Display error message using toast
-        toast.error(error.message || "No computer found for the scanned QR code.");
+        toast.error("No computer found for the scanned QR code.");
         setIsCardDisplayed(false);
       } else if (data) {
         setIsCardDisplayed(true);
@@ -120,19 +120,19 @@ const VerifyComputer = () => {
             />
             <div className="text-left w-full space-y-4">
               <div>
-                <Text className="text-xl font-bold text-gray-800">Names:</Text>
+                <Text className="text-xl font-bold text-gray-800">Names: </Text>
                 <Text className="text-lg text-gray-700">{data.names}</Text>
               </div>
               <div>
                 <Text className="text-xl font-bold text-gray-800">
-                  {data.regNo ? "Reg No:" : "National ID:"}
+                  {data.regNo ? "Reg No: " : "National ID: "}
                 </Text>
                 <Text className="text-lg text-gray-700">
                   {data.regNo ? data.regNo : data.nationalId}
                 </Text>
               </div>
               <div>
-                <Text className="text-xl font-bold text-gray-800">Serial No:</Text>
+                <Text className="text-xl font-bold text-gray-800">Serial No: </Text>
                 <Text className="text-lg text-gray-700">{data.serialNo}</Text>
               </div>
             </div>
