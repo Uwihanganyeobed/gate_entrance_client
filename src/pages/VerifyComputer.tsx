@@ -1,4 +1,3 @@
-// src/pages/VerifyComputer.tsx
 import { useState, useEffect, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useVerifyComputer } from "../hooks/useVerifyComputer";
@@ -102,23 +101,27 @@ const VerifyComputer = () => {
               alt="User Photo"
               className="w-full h-auto mb-6 rounded-lg object-cover"
             />
-            <div className="text-left w-full">
-              <Text className="text-xl font-bold text-gray-800 mb-1">
-                Names:
-              </Text>
-              <Text className="text-lg text-gray-700 mb-4">{data.names}</Text>
-
-              <Text className="text-xl font-bold text-gray-800 mb-1">
-                {data.regNo ? "Reg No:" : "National ID:"}
-              </Text>
-              <Text className="text-lg text-gray-700 mb-4">
-                {data.regNo ? data.regNo : data.nationalId}
-              </Text>
-
-              <Text className="text-xl font-bold text-gray-800 mb-1">
-                Serial No:
-              </Text>
-              <Text className="text-lg text-gray-700">{data.serialNo}</Text>
+            <div className="text-left w-full space-y-4">
+              <div>
+                <Text className="text-xl font-bold text-gray-800">
+                  Names:
+                </Text>
+                <Text className="text-lg text-gray-700">{data.names}</Text>
+              </div>
+              <div>
+                <Text className="text-xl font-bold text-gray-800">
+                  {data.regNo ? "Reg No:" : "National ID:"}
+                </Text>
+                <Text className="text-lg text-gray-700">
+                  {data.regNo ? data.regNo : data.nationalId}
+                </Text>
+              </div>
+              <div>
+                <Text className="text-xl font-bold text-gray-800">
+                  Serial No:
+                </Text>
+                <Text className="text-lg text-gray-700">{data.serialNo}</Text>
+              </div>
             </div>
           </Flex>
         </Card>
