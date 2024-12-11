@@ -9,16 +9,21 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes.tsx";
-
+import "./i18n";
+import { ThemeProvider } from "./context/ThemeContext.tsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <Theme>
-        <RouterProvider router={router} />
-        <ToastContainer />
-      </Theme>
-    </QueryClientProvider>
-  </StrictMode>
+  <ThemeProvider>
+    <StrictMode>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <Theme>
+            <RouterProvider router={router} />
+            <ToastContainer />
+          </Theme>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </StrictMode>
+  </ThemeProvider>
 );

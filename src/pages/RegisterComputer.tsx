@@ -1,4 +1,3 @@
-// src/pages/RegisterComputer.tsx
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,9 +8,13 @@ import { toast } from "react-toastify";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { Button } from "@radix-ui/themes";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const RegisterComputer = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme(); // Get the current theme
+  const { t } = useTranslation(); // Get the translation function
   const [userType, setUserType] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [qrCodeContent, setQrCodeContent] = useState<string | null>(null);
@@ -32,11 +35,10 @@ const RegisterComputer = () => {
 
   const onSubmit = (data: ComputerSchema) => {
     if (!qrCodeContent) {
-      toast.error("Please scan a QR code before submitting.");
+      toast.error(t("Please scan a QR code before submitting.")); // Using translation
       return;
     }
 
-    // Create an object with only the required fields
     const requestData: ComputerSchema = {
       brand: data.brand,
       serialNo: data.serialNo,
@@ -51,14 +53,14 @@ const RegisterComputer = () => {
           reset();
           setUserType(null);
           setQrCodeContent(null);
-          toast.success("Computer registered successfully!");
+          toast.success(t("Computer registered successfully!")); // Using translation
           setTimeout(() => {
-            navigate('/');
+            navigate("/");
           }, 3000);
         },
         onError: (error: any) => {
           const errorMessage =
-            error.response?.data?.error || "An error occurred";
+            error.response?.data?.error || t("An error occurred."); // Using translation
           console.error("Registration Error:", error);
           toast.error(`${errorMessage}`);
         },
@@ -89,11 +91,11 @@ const RegisterComputer = () => {
           html5QrcodeScanner
             .clear()
             .then(() => {
-              toast.success("QR code scanned successfully!");
+              toast.success(t("QR code scanned successfully!")); // Using translation
             })
             .catch((error: any) => {
               console.error("Error clearing QR scanner:", error);
-              toast.error("Failed to clear the QR scanner.");
+              toast.error(t("Failed to clear the QR scanner.")); // Using translation
             });
         },
         (error: any) => {
@@ -119,74 +121,90 @@ const RegisterComputer = () => {
   }, [isScanning]);
 
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-8 text-primary">
-        Register Computer
+    <main
+      className={`p-4 bg-${theme === "dark" ? "gray-800" : "white"} w-full`}
+    >
+      <h1
+        className={`text-3xl font-bold text-center mb-8 text-${
+          theme === "dark" ? "white" : "text-primary"
+        }`}
+      >
+        {t("Register Computer")} {/* Using translation */}
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-lg mx-auto bg-white p-6 rounded shadow-md"
+        className={`max-w-lg mx-auto bg-${
+          theme === "dark" ? "gray-700" : "white"
+        } p-6 rounded shadow-md`}
       >
         <div className="mb-4">
           <label
             htmlFor="userType"
-            className="block text-gray-700 font-semibold mb-2"
+            className={`block font-semibold mb-2 text-${
+              theme === "dark" ? "gray-300" : "gray-700"
+            }`}
           >
-            User Type
+            {t("User Type")} {/* Using translation */}
           </label>
           <select
             id="userType"
             name="userType"
-            className="w-full p-2 border border-gray-300 rounded"
+            className={`w-full p-2 border border-gray-300 rounded bg-${
+              theme === "dark" ? "gray-600" : "white"
+            } text-${theme === "dark" ? "gray-300" : "gray-700"}`}
             onChange={handleUserTypeChange}
             defaultValue=""
           >
             <option value="" disabled>
-              Select User Type
+              {t("Select User Type")} {/* Using translation */}
             </option>
-            <option value="student">Student</option>
-            <option value="guest">Guest</option>
+            <option value="student">{t("Student")}</option> {/* Using translation */}
+            <option value="guest">{t("Guest")}</option> {/* Using translation */}
           </select>
         </div>
         {userType === "student" && (
           <FormField
-            label="Registration No"
+            label={t("Registration No")} // Using translation
             type="number"
             name="regNo"
-            placeholder="Enter your registration number"
+            placeholder={t("Enter your Registration Number (9 digits)")} // Using translation
             register={register}
             error={errors.regNo?.message}
           />
         )}
         {userType === "guest" && (
           <FormField
-            label="National ID"
+            label={t("National ID")} // Using translation
             type="number"
             name="nationalId"
-            placeholder="Enter your national ID"
+            placeholder={t("Enter your National ID")} // Using translation
             register={register}
             error={errors.nationalId?.message}
           />
         )}
         <FormField
-          label="Serial No"
+          label={t("Serial No")} // Using translation
           type="text"
           name="serialNo"
-          placeholder="Enter the serial number"
+          placeholder={t("Enter the serial number")} // Using translation
           register={register}
           error={errors.serialNo?.message}
         />
         <FormField
-          label="Brand"
+          label={t("Brand")} // Using translation
           type="text"
           name="brand"
-          placeholder="Enter the brand"
+          placeholder={t("Enter the brand")} // Using translation
           register={register}
           error={errors.brand?.message}
         />
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-2">
-            Scan QR Code
+          <label
+            className={`block font-semibold mb-2 text-${
+              theme === "dark" ? "gray-300" : "gray-700"
+            }`}
+          >
+            {t("Scan QR Code")} {/* Using translation */}
           </label>
           {isScanning ? (
             <div
@@ -201,18 +219,26 @@ const RegisterComputer = () => {
           ) : (
             <Button
               onClick={() => setIsScanning(true)}
-              className="relative inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className={`relative inline-flex items-center px-4 py-2 bg-${
+                theme === "dark" ? "blue-600" : "blue-500"
+              } text-white rounded hover:bg-${
+                theme === "dark" ? "blue-700" : "blue-600"
+              }`}
             >
-              Start Scanning
+              {t("Start Scanning")} {/* Using translation */}
             </Button>
           )}
         </div>
         <button
           type="submit"
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary mt-4 disabled:opacity-50"
+          className={`${
+            theme === "dark"
+              ? "bg-gray-800 text-white hover:bg-gray-400"
+              : "bg-primary text-white hover:bg-secondary"
+          } px-4 py-2 rounded mt-10 disabled:opacity-50`}
           disabled={status === "pending"}
         >
-          {status === "pending" ? "Submitting..." : "Register"}
+          {status === "pending" ? t("Submitting...") : t("Register")} {/* Using translation */}
         </button>
       </form>
     </main>

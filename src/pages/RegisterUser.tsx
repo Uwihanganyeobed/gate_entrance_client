@@ -1,4 +1,3 @@
-// src/pages/RegisterUser.tsx
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -8,8 +7,12 @@ import CameraCapture from '../components/CameraCapture';
 import { useRegisterUser } from '../hooks/useRegisterUser';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
+import { useTranslation } from 'react-i18next'; // Importing useTranslation
 
 const RegisterUser = () => {
+  const { theme } = useTheme(); // Get the current theme
+  const { t } = useTranslation(); // Get the translation function
   const [photo, setPhoto] = useState<File | null>(null);
   const navigate = useNavigate();
 
@@ -48,13 +51,13 @@ const RegisterUser = () => {
       onSuccess: () => {
         reset();
         setPhoto(null);
-        toast.success('User registered successfully!');
+        toast.success(t("User registered successfully!")); // Using translation
         setTimeout(() => {
           navigate('/'); // Go to the home page
         }, 3000); // 3 seconds delay
       },
       onError: (error: any) => {
-        const errorMessage = error.response?.data?.error || 'An error occurred';
+        const errorMessage = error.response?.data?.error || t("An error occurred."); // Using translation
         console.log(error);
         toast.error(`${errorMessage}`);
       },
@@ -64,41 +67,43 @@ const RegisterUser = () => {
   const userType = watch('userType');
 
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-center mb-8 text-primary">Register User</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto bg-white p-6 rounded shadow-md">
+    <main className={`p-4 bg-${theme === 'dark' ? 'gray-800' : 'white'} w-full`}>
+      <h1 className={`text-3xl font-bold text-center mb-8 text-${theme === 'dark' ? 'white' : 'text-primary'}`}>
+        {t("Register User")} {/* Using translation */}
+      </h1>
+      <form onSubmit={handleSubmit(onSubmit)} className={`max-w-lg mx-auto bg-${theme === 'dark' ? 'gray-700' : 'white'} p-6 rounded shadow-md`}>
         <FormField
-          label="First Name"
+          label={t("First Name")} // Using translation
           type="text"
           name="firstName"
-          placeholder="Enter your first name"
+          placeholder={t("example: Lorem")} // Using translation
           register={register}
           error={errors.firstName?.message}
         />
         <FormField
-          label="Last Name"
+          label={t("Last Name")} // Using translation
           type="text"
           name="lastName"
-          placeholder="Enter your last name"
+          placeholder={t("example: Lama")} // Using translation
           register={register}
           error={errors.lastName?.message}
         />
         <FormField
-          label="User Type"
+          label={t("User Type")} // Using translation
           type="select"
           name="userType"
-          options={['guest', 'student']}
+          options={[t("Guest"), t("Student")]} // Using translation
           register={register}
           error={errors.userType?.message}
         />
         <FormField
-          label="Registration No / National ID"
+          label={t("Registration No / National ID")} // Using translation
           type="number"
           name="registrationOrId"
           placeholder={
             userType === 'guest'
-              ? 'Enter your National ID (16 digits)'
-              : 'Enter your Registration Number (9 digits)'
+              ? t("Enter your National ID (16 digits)") // Using translation
+              : t("Enter your Registration Number (9 digits)") // Using translation
           }
           register={register}
           error={errors.registrationOrId?.message}
@@ -107,10 +112,10 @@ const RegisterUser = () => {
         {errors.photo && <p className="text-red-500 text-sm mb-4">{errors.photo.message}</p>}
         <button
           type="submit"
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary mt-4"
+          className={`bg-primary text-white px-4 py-2 rounded hover:bg-secondary mt-4`}
           disabled={status === 'pending'}
         >
-          {status === 'pending' ? 'Submitting...' : 'Register'}
+          {status === 'pending' ? t("Submitting...") : t("Register")} {/* Using translation */}
         </button>
       </form>
     </main>

@@ -1,17 +1,18 @@
-import { Outlet } from "react-router-dom"
-import Footer from "./components/Footer"
-import Navigation from "./components/Navigation"
+// /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Outlet } from "react-router-dom";
+import Footer from "./components/Footer";
+import Navigation from "./components/Navigation";
 
-const Layout = () => {
+const Layout: React.FC = () => {
   return (
-    <div className="grid grid-rows-[auto,1fr,auto] min-h-screen">
+    <div className="flex flex-col w-full h-full">
       <Navigation />
-      <main className="container mx-auto p-1">
+      <main className="w-full"> {/* Changed to full width */}
         <Outlet />
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
