@@ -1,6 +1,6 @@
 // src/hooks/useVerifyComputer.ts
-import { useQuery } from '@tanstack/react-query';
-import APIClient from '../api/api-client';
+import { useQuery } from "@tanstack/react-query";
+import APIClient from "../api/api-client";
 
 interface VerifyComputerResponse {
   photoLink: string;
@@ -11,11 +11,11 @@ interface VerifyComputerResponse {
 }
 
 // Create an instance of APIClient outside the hook
-const client = new APIClient<VerifyComputerResponse>('/computers/verify');
+const client = new APIClient<VerifyComputerResponse>("/computers/verify");
 
 export const useVerifyComputer = (qrCodeContent: string) => {
   return useQuery<VerifyComputerResponse, Error>({
-    queryKey: ['verifyComputer', qrCodeContent],
+    queryKey: ["verifyComputer", qrCodeContent],
     queryFn: async () => {
       return client.get(qrCodeContent);
     },

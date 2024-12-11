@@ -1,5 +1,5 @@
 // src/api/api-client.ts
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:3000/api", // Ensure this environment variable is set

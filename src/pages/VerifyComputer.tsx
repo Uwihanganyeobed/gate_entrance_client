@@ -4,7 +4,7 @@ import { useVerifyComputer } from "../hooks/useVerifyComputer";
 import { toast } from "react-toastify";
 import { Button, Card, Text, Flex } from "@radix-ui/themes";
 import { useTheme } from "../context/ThemeContext";
-import { useTranslation } from 'react-i18next'; // Importing useTranslation
+import { useTranslation } from "react-i18next"; // Importing useTranslation
 
 const VerifyComputer = () => {
   const { theme } = useTheme(); // Get the current theme
@@ -59,11 +59,9 @@ const VerifyComputer = () => {
 
     return () => {
       if (html5QrcodeScannerRef.current) {
-        html5QrcodeScannerRef.current
-          .clear()
-          .catch((error: any) => {
-            console.error("Error clearing QR scanner on unmount:", error);
-          });
+        html5QrcodeScannerRef.current.clear().catch((error: any) => {
+          console.error("Error clearing QR scanner on unmount:", error);
+        });
       }
     };
   }, [isScanning, t]);
@@ -78,16 +76,29 @@ const VerifyComputer = () => {
   };
 
   return (
-    <main className={`p-4 bg-${theme === 'dark' ? 'gray-800' : 'white'} w-full h-full ${!isScanning ? 'min-h-screen' : ''} pb-20`}>
-      <h1 className={`text-3xl font-bold text-center mb-8 text-${theme === 'dark' ? 'white' : 'gray-800'}`}>
+    <main
+      className={`p-4 bg-${
+        theme === "dark" ? "gray-800" : "white"
+      } w-full h-full ${!isScanning ? "min-h-screen" : ""} pb-20`}
+    >
+      <h1
+        className={`text-3xl font-bold text-center mb-8 text-${
+          theme === "dark" ? "white" : "gray-800"
+        }`}
+      >
         {t("Verify Computer")} {/* Using translation */}
       </h1>
       <div className="flex justify-center mb-6">
         <Button
           onClick={startScanning}
-          className={`px-6 py-3 bg-${theme === 'dark' ? 'gray-600' : 'gray-800'} text-white text-lg font-medium rounded-lg hover:bg-${theme === 'dark' ? 'gray-700' : 'gray-900'} transition-colors duration-200`}
+          className={`px-6 py-3 bg-${
+            theme === "dark" ? "gray-600" : "gray-800"
+          } text-white text-lg font-medium rounded-lg hover:bg-${
+            theme === "dark" ? "gray-700" : "gray-900"
+          } transition-colors duration-200`}
         >
-          {isCardDisplayed ? t("Scan Again") : t("Start Scanning")} {/* Using translation */}
+          {isCardDisplayed ? t("Scan Again") : t("Start Scanning")}{" "}
+          {/* Using translation */}
         </Button>
       </div>
       {isScanning && (
@@ -111,7 +122,9 @@ const VerifyComputer = () => {
       {data && isCardDisplayed && (
         <Card
           variant="classic"
-          className={`mt-8 mx-auto max-w-lg p-6 border border-gray-300 rounded-lg shadow-md bg-${theme === 'dark' ? 'gray-700' : 'white'}`}
+          className={`mt-8 mx-auto max-w-lg p-6 border border-gray-300 rounded-lg shadow-md bg-${
+            theme === "dark" ? "gray-700" : "white"
+          }`}
         >
           <Flex direction="column" align="center">
             <img
@@ -121,20 +134,55 @@ const VerifyComputer = () => {
             />
             <div className="text-left w-full space-y-4">
               <div>
-                <Text className={`text-xl font-bold text-${theme === 'dark' ? 'white' : 'gray-800'}`}>{t("Names:")}</Text> {/* Using translation */}
-                <Text className={`text-lg text-${theme === 'dark' ? 'gray-300' : 'gray-700'}`}>{data.names}</Text>
+                <Text
+                  className={`text-xl font-bold text-${
+                    theme === "dark" ? "white" : "gray-800"
+                  }`}
+                >
+                  {t("Names:")}
+                </Text>{" "}
+                {/* Using translation */}
+                <Text
+                  className={`text-lg text-${
+                    theme === "dark" ? "gray-300" : "gray-700"
+                  }`}
+                >
+                  {data.names}
+                </Text>
               </div>
               <div>
-                <Text className={`text-xl font-bold text-${theme === 'dark' ? 'white' : 'gray-800'}`}>
-                  {data.regNo ? t("Reg No:") : t("National ID:")} {/* Using translation */}
+                <Text
+                  className={`text-xl font-bold text-${
+                    theme === "dark" ? "white" : "gray-800"
+                  }`}
+                >
+                  {data.regNo ? t("Reg No:") : t("National ID:")}{" "}
+                  {/* Using translation */}
                 </Text>
-                <Text className={`text-lg text-${theme === 'dark' ? 'gray-300' : 'gray-700'}`}>
+                <Text
+                  className={`text-lg text-${
+                    theme === "dark" ? "gray-300" : "gray-700"
+                  }`}
+                >
                   {data.regNo ? data.regNo : data.nationalId}
                 </Text>
               </div>
               <div>
-                <Text className={`text-xl font-bold text-${theme === 'dark' ? 'white' : 'gray-800'}`}>{t("Serial No:")}</Text> {/* Using translation */}
-                <Text className={`text-lg text-${theme === 'dark' ? 'gray-300' : 'gray-700'}`}>{data.serialNo}</Text>
+                <Text
+                  className={`text-xl font-bold text-${
+                    theme === "dark" ? "white" : "gray-800"
+                  }`}
+                >
+                  {t("Serial No:")}
+                </Text>{" "}
+                {/* Using translation */}
+                <Text
+                  className={`text-lg text-${
+                    theme === "dark" ? "gray-300" : "gray-700"
+                  }`}
+                >
+                  {data.serialNo}
+                </Text>
               </div>
             </div>
           </Flex>

@@ -27,14 +27,21 @@ const FormField: FC<FormFieldProps> = ({
 
   return (
     <div className="mb-4">
-      <label htmlFor={name} className={`block font-semibold mb-2 text-${theme === 'dark' ? 'gray-300' : 'gray-700'}`}>
+      <label
+        htmlFor={name}
+        className={`block font-semibold mb-2 text-${
+          theme === "dark" ? "gray-300" : "gray-700"
+        }`}
+      >
         {label}
       </label>
       {type === "select" ? (
         <select
           id={name}
           {...register(name)}
-          className={`w-full p-2 border border-gray-300 rounded bg-${theme === 'dark' ? 'gray-600' : 'white'} text-${theme === 'dark' ? 'gray-300' : 'gray-700'}`}
+          className={`w-full p-2 border border-gray-300 rounded bg-${
+            theme === "dark" ? "gray-600" : "white"
+          } text-${theme === "dark" ? "gray-300" : "gray-700"}`}
           disabled={readOnly} // Disable select if readOnly
         >
           <option value="">Select {label}</option>
@@ -50,7 +57,9 @@ const FormField: FC<FormFieldProps> = ({
           id={name}
           placeholder={placeholder}
           {...register(name)}
-          className={`w-full p-2 border border-gray-300 rounded bg-${theme === 'dark' ? 'gray-600' : 'white'} text-${theme === 'dark' ? 'gray-300' : 'gray-700'}`}
+          className={`w-full p-2 border border-gray-300 rounded bg-${
+            theme === "dark" ? "gray-600" : "white"
+          } text-${theme === "dark" ? "gray-300" : "gray-700"}`}
           readOnly={readOnly} // Apply readOnly to input
         />
       )}

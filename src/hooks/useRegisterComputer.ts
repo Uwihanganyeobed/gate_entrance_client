@@ -1,7 +1,7 @@
 // src/hooks/useRegisterComputer.ts
-import { useMutation } from '@tanstack/react-query';
-import APIClient from '../api/api-client';
-import { ComputerSchema } from '../validation/computerSchemas';
+import { useMutation } from "@tanstack/react-query";
+import APIClient from "../api/api-client";
+import { ComputerSchema } from "../validation/computerSchemas";
 
 interface RegisterComputerVariables {
   data: ComputerSchema;
@@ -15,7 +15,7 @@ export const useRegisterComputer = () => {
         `/computers/${encodeURIComponent(qrCodeContent)}`
       );
       return client.post(data, {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       });
     },
   });

@@ -1,7 +1,7 @@
 // src/components/CameraCapture.tsx
-import { useRef, useState, FC } from 'react';
-import Webcam from 'react-webcam';
-import { useTheme } from '../context/ThemeContext';
+import { useRef, useState, FC } from "react";
+import Webcam from "react-webcam";
+import { useTheme } from "../context/ThemeContext";
 
 interface CameraCaptureProps {
   onCapture: (photo: File) => void;
@@ -23,7 +23,7 @@ const CameraCapture: FC<CameraCaptureProps> = ({ onCapture }) => {
       if (screenshot) {
         const response = await fetch(screenshot);
         const blob = await response.blob();
-        const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+        const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
         onCapture(file);
         setCapturedPhoto(screenshot);
         setIsCameraOpen(false);
@@ -33,7 +33,11 @@ const CameraCapture: FC<CameraCaptureProps> = ({ onCapture }) => {
 
   return (
     <div className="mb-4">
-      <label className={`block font-semibold mb-2 text-${theme === 'dark' ? 'gray-300' : 'gray-700'}`}>
+      <label
+        className={`block font-semibold mb-2 text-${
+          theme === "dark" ? "gray-300" : "gray-700"
+        }`}
+      >
         Capture Photo
       </label>
       <div className="flex flex-col items-center">

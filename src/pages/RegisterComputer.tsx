@@ -9,7 +9,7 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import { Button } from "@radix-ui/themes";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
-import { useTranslation } from 'react-i18next'; // Importing useTranslation
+import { useTranslation } from "react-i18next"; // Importing useTranslation
 
 const RegisterComputer = () => {
   const navigate = useNavigate();
@@ -158,8 +158,10 @@ const RegisterComputer = () => {
             <option value="" disabled>
               {t("Select User Type")} {/* Using translation */}
             </option>
-            <option value="student">{t("Student")}</option> {/* Using translation */}
-            <option value="guest">{t("Guest")}</option> {/* Using translation */}
+            <option value="student">{t("Student")}</option>{" "}
+            {/* Using translation */}
+            <option value="guest">{t("Guest")}</option>{" "}
+            {/* Using translation */}
           </select>
         </div>
         {userType === "student" && (
@@ -238,7 +240,8 @@ const RegisterComputer = () => {
           } px-4 py-2 rounded mt-10 disabled:opacity-50`}
           disabled={status === "pending"}
         >
-          {status === "pending" ? t("Submitting...") : t("Register")} {/* Using translation */}
+          {status === "pending" ? t("Submitting...") : t("Register")}{" "}
+          {/* Using translation */}
         </button>
       </form>
     </main>
