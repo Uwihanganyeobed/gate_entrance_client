@@ -2,7 +2,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000/api", // Ensure this environment variable is set
+  baseURL: "https://devisec-120acc0fbfc0.herokuapp.com/api", // Ensure this environment variable is set
 });
 
 class APIClient<T> {
