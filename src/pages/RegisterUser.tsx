@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -107,7 +108,7 @@ const RegisterUser = () => {
           label={t("User Type")} // Using translation
           type="select"
           name="userType"
-          options={[t("Guest"), t("Student")]} // Using translation
+          options={[t("guest"), t("student")]} // Using translation
           register={register}
           error={errors.userType?.message}
         />
